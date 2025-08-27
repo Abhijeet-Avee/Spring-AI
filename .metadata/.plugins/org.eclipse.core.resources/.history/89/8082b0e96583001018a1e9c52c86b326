@@ -1,0 +1,5 @@
+spring.application.name=chatbot-demo-ollama
+server.port=8081
+
+# Ollama configuration
+spring.ai.ollama.base-url=http://localhost:11434

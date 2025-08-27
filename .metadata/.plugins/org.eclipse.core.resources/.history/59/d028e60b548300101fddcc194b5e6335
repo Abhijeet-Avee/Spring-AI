@@ -1,0 +1,3 @@
+spring.application.name=chatbot-demo
+
+server.port=8081
