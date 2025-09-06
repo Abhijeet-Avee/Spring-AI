@@ -1,8 +1,0 @@
-package com.spring.ai.demo.chatbot_demo.controller;
-
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-public class ChatController {
-
-}

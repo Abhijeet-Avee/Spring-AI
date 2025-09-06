@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring accessors="true" comment="Delete element from project &apos;chatbot-demo&apos;&#x0D;&#x0A;- Original project: &apos;chatbot-demo&apos;&#x0D;&#x0A;- Original element: &apos;ChatController.java&apos;" description="Delete element" element1="src/main/java/com/spring/ai/demo/chatbot_demo/controller/ChatController.java" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="1" stamp="1756307303805" subPackages="false" version="1.0"/>
-</session>

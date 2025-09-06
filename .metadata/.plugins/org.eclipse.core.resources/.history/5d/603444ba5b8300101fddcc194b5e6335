@@ -1,6 +1,0 @@
-spring.application.name=chatbot-demo
-server.port=8081
-
-
-#api key for open AI
-spring.ai.openai.api-key=${OPENAI_API_KEY}
