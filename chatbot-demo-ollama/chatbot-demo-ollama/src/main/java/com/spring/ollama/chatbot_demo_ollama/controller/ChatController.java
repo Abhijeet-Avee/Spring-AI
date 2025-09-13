@@ -80,13 +80,22 @@ public class ChatController {
 		List<BasicResponseModel> response = this.chatService.getEntityResultListAsResponse(query);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@GetMapping("/promptDefaultOptions")
 	public ResponseEntity<String> getChatUsingPromptDefaultOptions(
 			@RequestParam(value = "q", required = true) String query) {
 
 		// Returning a simple chat using just the user query with default prompt options
 		String response = this.chatService.simpleStringChatWithPromptDefault(query);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/propmptUserSpec")
+	public ResponseEntity<String> getResponsUsingPromptUserSpec(
+			@RequestParam(value = "q", required = true) String query) {
+
+		// Returning a simple chat using just the user query with PromptUserSpec options
+		String response = this.chatService.simpleStringChatWithPromptUserSpec(query);
 		return ResponseEntity.ok(response);
 	}
 }

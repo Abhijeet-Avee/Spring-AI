@@ -23,4 +23,16 @@ public interface ChatService {
 	List<BasicResponseModel> getEntityResultListAsResponse(String query);
 	
 	String simpleStringChatWithPromptDefault(String query);
+	
+	String simpleStringChatWithPromptUserSpec(String query);
+	
+	String simplePromptTemplate();
+	
+	String promptTemplateWithRoles();
+	
+	String promptUsingFluentApi();
+	
+	String redingPromptTemplateFromFileWithRoles();
+	
+	String readingPrmomptTemplateFromFileWithFluentApi();
 }
