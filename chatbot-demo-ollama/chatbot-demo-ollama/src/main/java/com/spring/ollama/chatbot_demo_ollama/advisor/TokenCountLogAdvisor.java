@@ -29,8 +29,15 @@ public class TokenCountLogAdvisor implements CallAdvisor, StreamAdvisor {
 	@Override
 	public Flux<ChatClientResponse> adviseStream(ChatClientRequest chatClientRequest,
 			StreamAdvisorChain streamAdvisorChain) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		logger.info("TokenCountLogAdvisor called for streaming...");
+		logger.info("TokenCountLogAdvisor - Requesting model: " + chatClientRequest);
+		
+		var response = streamAdvisorChain.nextStream(chatClientRequest);
+		
+		logger.info("TokenCountLogAdvisor - Receiving streaming response.");
+		
+		return response;
 	}
 
 	@Override

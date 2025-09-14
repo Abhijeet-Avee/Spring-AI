@@ -3,8 +3,11 @@ package com.spring.ollama.chatbot_demo_ollama.config;
 import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.context.annotation.Bean;
@@ -44,12 +47,39 @@ public class AIConfig {
 				.defaultOptions(defaultOptions).build();
 	}
 	
+	
+	// Example of using ChatMemoryAdvisor with ChatMemory
 	@Bean(name = "ollamaChatClient2")
-	public ChatClient ollamaChatClient2(OllamaChatModel ollamaChatModel) {
+	public ChatClient ollamaChatClient2(OllamaChatModel ollamaChatModel, ChatMemory chatMemory) {
+		
+		// Here chat memory is injected by Spring AI
+		// It is providing MessageWindowChatMemory implementation by default
+		// Enabling chat memory advisor globally for the client
+		MessageChatMemoryAdvisor memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory)
+																			.build();
+		
 		return ChatClient.builder(ollamaChatModel)
-				//Enabling custom advisor globally for the client
-				.defaultAdvisors( 
-						new TokenCountLogAdvisor()) // custom advisor to log token count					
+				// Enabling multiple advisors globally for the client
+				.defaultAdvisors( memoryAdvisor, // chat memory advisor
+						new TokenCountLogAdvisor()) // custom advisor to log token counts			
+				.build();
+	}
+	
+	// Example of using ChatMemoryAdvisor with ChatMemory with manually created instance
+	@Bean(name = "ollamaChatClient3")
+	public ChatClient ollamaChatClient3(OllamaChatModel ollamaChatModel) {
+
+		// Here we are creating MessageWindowChatMemory instance with max 10 messages
+		MessageWindowChatMemory messageWindowChatMemory = MessageWindowChatMemory.builder()
+																			.maxMessages(10)
+																			.build();
+		// Passing the created chat memory instance to the advisor
+		MessageChatMemoryAdvisor memoryAdvisor = MessageChatMemoryAdvisor.builder(messageWindowChatMemory).build();
+
+		return ChatClient.builder(ollamaChatModel)
+				// Enabling multiple advisors globally for the client
+				.defaultAdvisors(memoryAdvisor, // chat memory advisor
+						new TokenCountLogAdvisor()) // custom advisor to log token counts
 				.build();
 	}
 
