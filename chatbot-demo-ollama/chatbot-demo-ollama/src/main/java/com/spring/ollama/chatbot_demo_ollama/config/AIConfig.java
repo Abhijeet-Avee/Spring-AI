@@ -7,11 +7,15 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
+import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
+import org.springframework.ai.chat.memory.repository.jdbc.PostgresChatMemoryRepositoryDialect;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.spring.ollama.chatbot_demo_ollama.advisor.TokenCountLogAdvisor;
 
@@ -82,6 +86,60 @@ public class AIConfig {
 						new TokenCountLogAdvisor()) // custom advisor to log token counts
 				.build();
 	}
+	
+	
+	// Overriding the default ChatMemory bean to provide DB backed chat memory
+//	@Bean
+//	public ChatMemory chatMemory(JdbcChatMemoryRepository jdbcChatMemoryRepository) {
+//		
+//		ChatMemory chatMemory = MessageWindowChatMemory.builder()
+//														.chatMemoryRepository(jdbcChatMemoryRepository)
+//														.maxMessages(15)
+//														.build();
+//		return chatMemory;
+//	}
+	
+	// Example of using ChatMemoryAdvisor with ChatMemory for DB backed chat memory
+	@Bean(name = "ollamaChatClient4")
+	public ChatClient ollamaChatClient4(OllamaChatModel ollamaChatModel, ChatMemory chatMemory) {
+
+		// Here chat memory is injected by Spring AI
+		// It is providing JdbcChatMemory implementation by default if spring.datasource.* properties are configured
+		MessageChatMemoryAdvisor memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
+
+		return ChatClient.builder(ollamaChatModel)
+				// Enabling multiple advisors globally for the client
+				.defaultAdvisors(memoryAdvisor, // chat memory advisor
+						new TokenCountLogAdvisor()) // custom advisor to log token counts
+				.build();
+
+	}
+	
+	@Bean(name = "ollamaChatClient5")
+	public ChatClient ollamaChatClient5(OllamaChatModel ollamaChatModel, JdbcTemplate jdbcTemplate) {
+
+		// Here we are creating JdbcChatMemoryRepository instance manually
+		ChatMemoryRepository chatMemoryRepository = JdbcChatMemoryRepository.builder()
+																			.jdbcTemplate(jdbcTemplate)
+																			.dialect(new PostgresChatMemoryRepositoryDialect())
+																			.build();
+		// Creating MessageWindowChatMemory instance with max 20 messages
+		ChatMemory chatMemory = MessageWindowChatMemory.builder()
+														.chatMemoryRepository(chatMemoryRepository)
+														.maxMessages(20)
+														.build();
+		
+		// Passing the created chat memory instance to the advisor
+		MessageChatMemoryAdvisor memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
+
+		return ChatClient.builder(ollamaChatModel)
+				// Enabling multiple advisors globally for the client
+				.defaultAdvisors(memoryAdvisor, // chat memory advisor
+						new TokenCountLogAdvisor()) // custom advisor to log token counts
+				.build();
+
+	}
+	
 
 	// -- Similarly for multiple models, you can define more beans here
 }

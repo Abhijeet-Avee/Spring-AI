@@ -23,7 +23,7 @@ public class AdvisorChatServiceImpl implements AdvisorChatService {
 	@Value("classpath:prompts/user-message.st")
 	private Resource userMessageResource;
 
-	public AdvisorChatServiceImpl(@Qualifier(value = "ollamaChatClient3") ChatClient ollamaChatClient) {
+	public AdvisorChatServiceImpl(@Qualifier(value = "ollamaChatClient2") ChatClient ollamaChatClient) {
 		this.chatClient = ollamaChatClient;
 	}
 
