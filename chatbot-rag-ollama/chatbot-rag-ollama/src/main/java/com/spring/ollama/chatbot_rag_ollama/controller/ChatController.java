@@ -65,4 +65,13 @@ public class ChatController {
 		String response = this.chatService.ragChatWithCustomPromptTemplates(query, userId);
 		return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("/rag-naive-retrieval-augmentation-advisor")
+	public ResponseEntity<String> naiveRagRetrievalAugmentationAdvisor(@RequestParam(value = "q", required = true) String query,
+			@RequestHeader(value="userId", required=true) String userId) {
+
+		// Sequential RAG Flow using RetrievalAugmentationAdvisor and then passing the response to LLM
+		String response = this.chatService.naiveRagRetrievalAugmentationAdvisor(query, userId);
+		return ResponseEntity.ok(response);
+	}
 }

@@ -9,15 +9,21 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.template.st.StTemplateRenderer;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.filter.Filter.Expression;
+import org.springframework.ai.vectorstore.filter.Filter.ExpressionType;
+import org.springframework.ai.vectorstore.filter.Filter.Key;
+import org.springframework.ai.vectorstore.filter.Filter.Value;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +38,10 @@ public class ChatServiceImpl implements ChatService {
 	// Injecting the vector store
 	private VectorStore vectorStore;
 	
-	@Value("classpath:prompts/system-message.st")
+	@org.springframework.beans.factory.annotation.Value("classpath:prompts/system-message.st")
 	private Resource systemMessageResource;
 	
-	@Value("classpath:prompts/user-message.st")
+	@org.springframework.beans.factory.annotation.Value("classpath:prompts/user-message.st")
 	private Resource userMessageResource;
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -235,6 +241,31 @@ public class ChatServiceImpl implements ChatService {
 				.params(Map.of(ChatMemory.CONVERSATION_ID, userId, // Attach ChatMemory param
 						// Dynamic filter expression against metadata field 'type' in vector store
 						QuestionAnswerAdvisor.FILTER_EXPRESSION, "type == 'Java'")))
+				.user(user -> user.text(this.userMessageResource) // User message from file
+						.param("query", query)) // Dynamic variable for query
+				.call().content();
+
+		return chatResponse;
+	}
+
+	@Override
+	public String naiveRagRetrievalAugmentationAdvisor(String query, String userId) {
+		
+		// Here we are using RetrievalAugmentationAdvisor with VectorStoreDocumentRetriever
+		Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
+		        .documentRetriever(VectorStoreDocumentRetriever.builder()
+		        		.topK(3)
+		                .similarityThreshold(0.5)
+		                .vectorStore(vectorStore)
+		                	// country == "BG"* new Expression(EQ, new Key("country"), new Value("BG"));
+		                .filterExpression(new Expression(ExpressionType.EQ, new Key("type"), new Value("Java")))
+		                .build())
+		        .build();
+		
+		var chatResponse = this.chatClient.prompt()
+				.advisors(
+						advisorSpec -> advisorSpec.advisors(retrievalAugmentationAdvisor)
+				.param(ChatMemory.CONVERSATION_ID, userId))
 				.user(user -> user.text(this.userMessageResource) // User message from file
 						.param("query", query)) // Dynamic variable for query
 				.call().content();

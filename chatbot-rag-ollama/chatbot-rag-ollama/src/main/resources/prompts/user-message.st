@@ -1,2 +1,2 @@
-User Query:
+Answer Current User Query:
 {query}

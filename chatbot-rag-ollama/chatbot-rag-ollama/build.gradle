@@ -50,6 +50,9 @@ dependencies {
 	implementation 'org.springframework.ai:spring-ai-advisors-vector-store'
 	implementation 'org.springframework.ai:spring-ai-rag'	
 	
+	// document readers dependencies - pdf page and pdf paragraph
+	implementation 'org.springframework.ai:spring-ai-pdf-document-reader'
+	
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'

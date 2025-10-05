@@ -17,4 +17,6 @@ public interface ChatService {
 	String ragChatWithQuesAdvisorSearchReqDynamicFilter(String query, String userId);
 	
 	String ragChatWithCustomPromptTemplates(String query, String userId);
+	
+	String naiveRagRetrievalAugmentationAdvisor(String query, String userId);
 }
