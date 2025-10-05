@@ -1,1 +1,2 @@
-{concept}
+User Query:
+{query}

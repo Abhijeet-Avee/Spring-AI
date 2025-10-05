@@ -13,21 +13,35 @@ class ChatbotDemoOllamaApplicationTests {
 	@Autowired
 	private ChatService chatService;
 
+//	@Test
+//	void saveDataToVectorStore() {
+//
+//		System.out.println("Saving data to vector store");
+//		
+//		try {
+//			this.chatService.saveData(Helper.getData());
+//		}catch (Exception e) {
+//			System.err.println("Error saving data to vector store: " + e.getMessage());
+//			e.printStackTrace();
+//			return;
+//		}
+//		
+//		
+//		System.out.println("Data saved to vector store successfully");
+//	}
+	
 	@Test
 	void saveDataToVectorStore() {
+	    System.out.println("Saving data to vector store...");
 
-		System.out.println("Saving data to vector store");
-		
-		try {
-			this.chatService.saveData(Helper.getData());
-		}catch (Exception e) {
-			System.err.println("Error saving data to vector store: " + e.getMessage());
-			e.printStackTrace();
-			return;
-		}
-		
-		
-		System.out.println("Data saved to vector store successfully");
+	    try {
+	        // Pass the list of text content to your chatService for vector storage
+	        this.chatService.saveDataWithMetadata(Helper.getData());
+	        System.out.println("Data saved to vector store successfully");
+	    } catch (Exception e) {
+	        System.err.println("Error saving data to vector store: " + e.getMessage());
+	        e.printStackTrace();
+	    }
 	}
 
 }

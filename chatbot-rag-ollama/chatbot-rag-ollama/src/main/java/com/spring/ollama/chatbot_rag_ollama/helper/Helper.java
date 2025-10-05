@@ -26,7 +26,27 @@ public class Helper {
 	            "Streams in Java help process collections efficiently",
 	            "Java supports JDBC for database connectivity",
 	            "Java packages organize classes",
-	            "Java is widely used for web, desktop, and enterprise applications"
+	            "Java is widely used for web, desktop, and enterprise applications",
+	            "Python is a high-level programming language.",
+	            "It emphasizes code readability and simplicity.",
+	            "Python uses indentation to define code blocks.",
+	            "It supports multiple programming paradigms.",
+	            "Python has a large standard library.",
+	            "It is dynamically typed and interpreted.",
+	            "Python is great for automation and scripting.",
+	            "It is widely used in web development.",
+	            "Python powers data science and machine learning.",
+	            "It integrates well with C and C++ code.",
+	            "The Python Package Index hosts thousands of libraries.",
+	            "It supports object-oriented programming.",
+	            "Python can be used for backend API development.",
+	            "It is known for rapid application development.",
+	            "Python is cross-platform and open source.",
+	            "It has a vibrant global developer community.",
+	            "Python frameworks include Django and Flask.",
+	            "NumPy and Pandas make data analysis easy.",
+	            "TensorFlow and PyTorch are popular AI libraries.",
+	            "Python continues to evolve with every new version."
 				);
 	}
 	

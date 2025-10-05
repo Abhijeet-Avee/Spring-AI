@@ -140,6 +140,32 @@ public class AIConfig {
 
 	}
 	
+	@Bean(name = "ollamaChatClient6")
+	public ChatClient ollamaRAGChatClient(OllamaChatModel ollamaChatModel, JdbcTemplate jdbcTemplate) {
+
+		// Here we are creating JdbcChatMemoryRepository instance manually
+		ChatMemoryRepository chatMemoryRepository = JdbcChatMemoryRepository.builder()
+																			.jdbcTemplate(jdbcTemplate)
+																			.dialect(new PostgresChatMemoryRepositoryDialect())
+																			.build();
+		// Creating MessageWindowChatMemory instance with max 5 messages
+		ChatMemory chatMemory = MessageWindowChatMemory.builder()
+														.chatMemoryRepository(chatMemoryRepository)
+														.maxMessages(5)
+														.build();
+		
+		// Passing the created chat memory instance to the advisor
+		MessageChatMemoryAdvisor memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
+
+		return ChatClient.builder(ollamaChatModel)
+				// Enabling multiple advisors globally for the client
+				.defaultAdvisors(memoryAdvisor, // chat memory advisor
+						new SimpleLoggerAdvisor(),// example advisor to log the messages
+						new TokenCountLogAdvisor()) // custom advisor to log token counts
+				.build();
+
+	}
+	
 
 	// -- Similarly for multiple models, you can define more beans here
 }
