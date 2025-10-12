@@ -51,4 +51,11 @@ public class AdviserChatController {
 		String response = this.adviserChatService.advisorSessionChat(query, userId);
 		return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("/dateTool")
+	public ResponseEntity<String> dateToolChat(@RequestParam(value = "q", required = true) String query) {
+
+		String response = this.adviserChatService.dateTimeToolChat(query);
+		return ResponseEntity.ok(response);
+	}
 }

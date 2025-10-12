@@ -9,4 +9,6 @@ public interface AdvisorChatService {
 	Flux<String> advisorStreamChat(String query);
 
 	String advisorSessionChat(String query, String userId);
+	
+	String dateTimeToolChat(String query);
 }
